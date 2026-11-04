@@ -49,9 +49,8 @@ public class MainActivity extends Activity {
         } else if (Build.VERSION.SDK_INT >= 33) {
             return checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
                 || checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
+        return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestMediaPermission() {
@@ -77,7 +76,9 @@ public class MainActivity extends Activity {
             MediaStore.MediaColumns._ID,
             MediaStore.MediaColumns.DISPLAY_NAME,
             MediaStore.MediaColumns.DATE_ADDED,
-            MediaStore.MediaColumns.MIME_TYPE
+            MediaStore.MediaColumns.MIME_TYPE,
+            "bucket_id",
+            "bucket_display_name"
         };
         try (Cursor cursor = getContentResolver().query(
                 collection, projection, null, null,
@@ -87,6 +88,8 @@ public class MainActivity extends Activity {
             int nameCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
             int dateCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED);
             int mimeCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
+            int bucketIdCol = cursor.getColumnIndex("bucket_id");
+            int bucketNameCol = cursor.getColumnIndex("bucket_display_name");
             while (cursor.moveToNext()) {
                 long id = cursor.getLong(idCol);
                 Uri itemUri = ContentUris.withAppendedId(collection, id);
@@ -96,8 +99,14 @@ public class MainActivity extends Activity {
                 item.put("date", cursor.getLong(dateCol));
                 item.put("mime", cursor.getString(mimeCol) == null ? "" : cursor.getString(mimeCol));
                 item.put("type", type);
+                String bucketName = bucketNameCol >= 0 ? cursor.getString(bucketNameCol) : null;
+                String bucketId = bucketIdCol >= 0 ? cursor.getString(bucketIdCol) : null;
+                item.put("album", bucketName == null || bucketName.trim().isEmpty() ? "Other" : bucketName);
+                item.put("albumId", bucketId == null ? "other" : bucketId);
                 result.put(item);
             }
+        } catch (SecurityException ignored) {
+            // Android 14+ may grant access to only a selected subset or one media type.
         } catch (Exception ignored) { }
         return result;
     }
@@ -141,7 +150,7 @@ public class MainActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume();
-        if (webView != null && hasMediaPermission()) notifyPage(true);
+        if (webView != null) notifyPage(hasMediaPermission());
     }
 
     @Override public void onBackPressed() {
@@ -150,7 +159,11 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onDestroy() {
-        if (webView != null) { webView.removeJavascriptInterface("DreamcoreAlbum"); webView.destroy(); webView = null; }
+        if (webView != null) {
+            webView.removeJavascriptInterface("DreamcoreAlbum");
+            webView.destroy();
+            webView = null;
+        }
         super.onDestroy();
     }
 }
