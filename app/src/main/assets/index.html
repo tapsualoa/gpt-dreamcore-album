@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17162b"><title>Somewhere Else — Dreamcore Album</title>
+<style>
+:root{--ink:#f5efff;--line:rgba(255,255,255,.18);--glass:rgba(30,27,57,.58)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background:#17162b;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-3;background:linear-gradient(135deg,rgba(18,17,43,.78),rgba(53,39,76,.5)),url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=2000&q=85') center/cover}
+body:after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse at 18% 18%,rgba(205,174,231,.2),transparent 35%),radial-gradient(ellipse at 82% 70%,rgba(123,183,210,.2),transparent 40%)}
+.grain{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:.1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E")}
+header{padding:calc(env(safe-area-inset-top) + 18px) 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:13px;letter-spacing:.25em;text-transform:uppercase;color:#e8d9f2}.brand span{display:block;font:9px Arial,sans-serif;letter-spacing:.22em;color:#bdb2d0;margin-top:6px}
+.clock{font:10px Arial,sans-serif;letter-spacing:.13em;color:#d6cce7;text-align:right}
+main{max-width:1180px;margin:auto;padding:20px 18px calc(45px + env(safe-area-inset-bottom))}
+.hero{min-height:225px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px 8px 32px}
+.eyebrow{font:9px Arial,sans-serif;letter-spacing:.38em;text-transform:uppercase;color:#d7c7e9}
+h1{font-weight:400;font-size:clamp(42px,12vw,76px);letter-spacing:.045em;margin:16px 0 10px;text-shadow:0 4px 35px rgba(219,192,242,.32)}
+.subtitle{font-style:italic;color:#d7cce5;font-size:15px;line-height:1.7;max-width:470px}
+.rule{width:70px;height:1px;background:linear-gradient(90deg,transparent,#e6c8e8,transparent);margin:18px auto}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 20px}
+.tabs{display:flex;gap:5px;padding:4px;border:1px solid var(--line);border-radius:30px;background:rgba(14,13,32,.32);backdrop-filter:blur(15px)}
+.tab,.action{border:0;color:#e9def4;background:transparent;padding:10px 14px;border-radius:24px;cursor:pointer;font:10px Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.tab.active{background:rgba(228,197,232,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.actions{display:flex;gap:7px}.action{border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(12px)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.tile{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.2);border-radius:4px;background:rgba(255,255,255,.08);cursor:pointer;box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.tile img,.tile video{width:100%;height:100%;min-height:190px;max-height:280px;object-fit:cover;display:block;filter:saturate(.78) brightness(.86);transition:transform .7s}
+.tile:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(13,12,29,.82));pointer-events:none}
+.tile-info{position:absolute;z-index:1;left:12px;right:8px;bottom:12px}.tile-info b{font-weight:400;font-size:15px}.tile-info small{display:block;font:8px Arial,sans-serif;letter-spacing:.16em;color:#d8cbe7;margin-top:5px;text-transform:uppercase}
+.play{position:absolute;z-index:2;top:10px;right:10px;width:31px;height:31px;border:1px solid #ffffff8a;border-radius:50%;display:grid;place-items:center;background:#17162b88}
+.empty{grid-column:1/-1;text-align:center;padding:50px 15px;color:#d4c6e4;border:1px dashed var(--line);font-style:italic;line-height:1.8}
+footer{text-align:center;color:#b7a9c9;font:8px Arial,sans-serif;letter-spacing:.22em;margin-top:38px}
+.modal{position:fixed;inset:0;z-index:10;background:rgba(8,7,20,.94);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.open{display:flex}.viewer{max-width:100%;max-height:88vh;text-align:center}.viewer img,.viewer video{max-width:100%;max-height:76vh;object-fit:contain;border:1px solid #ffffff35}.viewer p{color:#e9dff2;font-style:italic}
+.close{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:16px;border:1px solid var(--line);background:#24203c;color:white;border-radius:50%;width:40px;height:40px;font-size:22px}
+input[type=file]{display:none}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.tile img,.tile video{min-height:230px;max-height:320px}}
+</style></head>
+<body><div class="grain"></div>
+<header><div class="brand">✧ Somewhere Else <span>an archive of almost-remembered things</span></div><div class="clock" id="clock">DREAM TIME</div></header>
+<main>
+<section class="hero"><div class="eyebrow">✦ memories from another place ✦</div><h1>Dreamcore</h1><div class="subtitle">“Somewhere between a memory and a dream,<br>there is a place that belongs only to you.”</div><div class="rule"></div></section>
+<section class="toolbar"><div class="tabs"><button class="tab active" data-filter="all">All</button><button class="tab" data-filter="photo">Photos</button><button class="tab" data-filter="video">Videos</button></div>
+<div class="actions"><label class="action" for="upload">＋ Add</label><input id="upload" type="file" accept="image/*,video/*" multiple><button class="action" id="about">About</button></div></section>
+<section class="grid" id="gallery"></section>
+<footer>NO MAPS · NO TIME · JUST THE FEELING OF BEING SOMEWHERE ELSE</footer>
+</main>
+<div class="modal" id="modal"><button class="close" id="close">×</button><div class="viewer" id="viewer"></div></div>
+<script>
+const DB_NAME='somewhere-else-album',STORE='memories';
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:'id',autoIncrement:true});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function dbAll(){const db=await openDB();return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function dbAdd(item){const db=await openDB();return new Promise((res,rej)=>{const r=db.transaction(STORE,'readwrite').objectStore(STORE).add(item);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+const samples=[
+['The quiet meadow','01 · somewhere green','https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=85'],
+['After the rain','02 · soft skies','https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85'],
+['A house in a dream','03 · familiar places','https://images.unsplash.com/photo-1449158743715-0a90?auto=format&fit=crop&w=1000&q=85'],
+['Blue hour','04 · almost midnight','https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=85'],
+['The endless summer','05 · far away','https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85'],
+['Somewhere quiet','06 · no one is waiting','https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85']];
+let items=[],filter='all',urls=[];
+const gallery=document.getElementById('gallery');
+function render(){urls.forEach(URL.revokeObjectURL);urls=[];gallery.innerHTML='';const shown=items.filter(x=>filter==='all'||x.type===filter);
+if(!shown.length){gallery.innerHTML='<div class="empty">Chưa có kỷ niệm nào ở đây.<br>Hãy chạm Add để chọn ảnh hoặc video.</div>';return}
+shown.forEach(x=>{const el=document.createElement('article');el.className='tile';const media=document.createElement(x.type==='video'?'video':'img');
+if(x.blob){media.src=URL.createObjectURL(x.blob);urls.push(media.src)}else media.src=x.src;
+media.alt=x.title;if(x.type==='video'){media.muted=true;media.playsInline=true}
+el.appendChild(media);if(x.type==='video'){const p=document.createElement('span');p.className='play';p.textContent='▶';el.appendChild(p)}
+const info=document.createElement('div');info.className='tile-info';const b=document.createElement('b');b.textContent=x.title;const sm=document.createElement('small');sm.textContent=x.tag;info.append(b,sm);el.appendChild(info);el.onclick=()=>openViewer(x);gallery.appendChild(el)})}
+function openViewer(x){const v=document.getElementById('viewer');v.innerHTML='';const m=document.createElement(x.type==='video'?'video':'img');m.src=x.blob?URL.createObjectURL(x.blob):x.src;m.alt=x.title;if(x.type==='video'){m.controls=true;m.autoplay=true;m.playsInline=true}else m.loading='eager';v.appendChild(m);const p=document.createElement('p');p.textContent=x.title;v.appendChild(p);document.getElementById('modal').classList.add('open')}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;render()});
+document.getElementById('upload').onchange=async e=>{const files=[...e.target.files];for(const f of files){try{await dbAdd({type:f.type.startsWith('video/')?'video':'photo',title:f.name.replace(/\.[^.]+$/,''),tag:'YOUR MEMORY · SAVED ON THIS DEVICE',blob:f,created:Date.now()})}catch(err){alert('Không thể lưu tệp này. Có thể bộ nhớ thiết bị đã đầy.')}}await load();filter='all';document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.filter==='all'));render();e.target.value=''};
+async function load(){let saved=[];try{saved=await dbAll()}catch(e){}items=[...saved.reverse().map(x=>({...x,tag:'YOUR MEMORY · SAVED ON THIS DEVICE'})),...samples.map(x=>({type:'photo',title:x[0],tag:x[1],src:x[2]}))]}
+function close(){document.getElementById('modal').classList.remove('open');const vid=document.querySelector('#viewer video');if(vid)vid.pause();document.getElementById('viewer').innerHTML=''}
+document.getElementById('close').onclick=close;document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')close()};
+document.getElementById('about').onclick=()=>alert('Somewhere Else — một chiếc album dành cho những khoảnh khắc mơ hồ, dịu dàng và kỳ lạ.\n\nẢnh và video bạn thêm được lưu trên thiết bị này.');
+function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'})+' · DREAM TIME'}
+(async()=>{await load();render();tick();setInterval(tick,30000)})();
+</script></body></html>
