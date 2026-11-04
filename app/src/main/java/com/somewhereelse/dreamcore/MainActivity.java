@@ -154,8 +154,14 @@ public class MainActivity extends Activity {
     }
 
     @Override public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) webView.goBack();
-        else super.onBackPressed();
+        if (webView != null) {
+            webView.evaluateJavascript("(function(){var v=document.getElementById('viewer');if(v&&v.classList.contains('open')){window.closeViewerFromNative();return 'viewer';}return 'page';})()", value -> {
+                if (!"\"viewer\"".equals(value)) {
+                    if (webView != null && webView.canGoBack()) webView.goBack();
+                    else MainActivity.super.onBackPressed();
+                }
+            });
+        } else super.onBackPressed();
     }
 
     @Override protected void onDestroy() {
