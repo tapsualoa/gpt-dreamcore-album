@@ -14,7 +14,7 @@ button{font:inherit;color:inherit}button:focus-visible{outline:2px solid var(--b
 #universe:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 18% 24%,rgba(229,174,231,.22),transparent 28%),radial-gradient(ellipse at 85% 60%,rgba(112,192,224,.18),transparent 32%),linear-gradient(180deg,transparent 55%,#100d25 100%)}
 .stars{position:absolute;inset:0;background-image:radial-gradient(2px 2px at 12% 22%,#fff9 50%,transparent 70%),radial-gradient(1px 1px at 75% 14%,#fff9 50%,transparent 70%),radial-gradient(2px 2px at 86% 46%,#eacfffaa 50%,transparent 70%),radial-gradient(1px 1px at 32% 61%,#fff9 50%,transparent 70%),radial-gradient(1px 1px at 62% 75%,#fff8 50%,transparent 70%);background-size:370px 330px;animation:starDrift 70s linear infinite;opacity:.65}
 @keyframes starDrift{to{background-position:370px -330px}}
-.orb{position:absolute;border-radius:50%;filter:blur(1px);opacity:.45;transform:translate3d(calc(var(--mx)*var(--depth)),calc(var(--my)*var(--depth)),0);transition:transform .35s ease-out}
+.orb{position:absolute;border-radius:50%;filter:none;opacity:.35;transform:translate3d(calc(var(--mx)*var(--depth)),calc(var(--my)*var(--depth)),0);transition:transform .35s ease-out}
 .orb.one{width:230px;height:230px;top:12%;left:-100px;background:radial-gradient(circle at 35% 30%,#f5d9f2aa,#a57cda22 65%,transparent 72%);--depth:22px}
 .orb.two{width:310px;height:310px;right:-150px;top:48%;background:radial-gradient(circle at 35% 30%,#b9eaff88,#6e83d322 65%,transparent 72%);--depth:-18px}
 .orb.three{width:150px;height:150px;left:55%;top:78%;background:radial-gradient(circle at 35% 30%,#f3c5e866,#9b71cf11 70%,transparent 75%);--depth:30px}
@@ -48,12 +48,12 @@ h1{font-size:clamp(48px,13vw,100px);font-weight:400;letter-spacing:.055em;line-h
 @media(min-width:700px){.library-tools{grid-template-columns:2fr 1fr 1fr}}
 .filter:active,.rescan:active{transform:scale(.96)}
 .gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;perspective:1200px}
-.card{position:relative;min-width:0;aspect-ratio: .79;overflow:hidden;border-radius:8px;border:1px solid #ffffff26;background:linear-gradient(145deg,#ffffff16,#ffffff04);box-shadow:0 24px 55px #05041166;transform-style:preserve-3d;will-change:transform;cursor:pointer;opacity:0;transform:translateY(35px) rotateX(8deg) scale(.96);transition:opacity .7s,transform .75s cubic-bezier(.2,.75,.2,1),box-shadow .5s}
+.card{position:relative;min-width:0;aspect-ratio:.79;overflow:hidden;border-radius:8px;border:1px solid #ffffff26;background:linear-gradient(145deg,#ffffff16,#ffffff04);box-shadow:0 12px 28px #05041155;transform-style:preserve-3d;cursor:pointer;opacity:0;transform:translateY(12px);transition:opacity .22s,transform .22s,box-shadow .22s}
 .card.visible{opacity:1;transform:translateY(0) rotateX(0) scale(1)}
-.card:nth-child(3n+2){margin-top:25px}.card:nth-child(4n){margin-top:-8px}
+.card:nth-child(3n+2){margin-top:12px}.card:nth-child(4n){margin-top:0}
 .card:hover{box-shadow:0 30px 70px #05041199,0 0 30px #d5b5f222}
 .card-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.78) brightness(.8);transition:transform .9s cubic-bezier(.2,.7,.2,1),filter .6s}
-.card:hover .card-media{transform:scale(1.08);filter:saturate(1) brightness(.95)}
+.card:hover .card-media{transform:scale(1.035);filter:saturate(.9) brightness(.9)}
 .card:after{content:"";position:absolute;inset:30% 0 0;background:linear-gradient(transparent,rgba(10,8,25,.88));pointer-events:none}
 .card-top{position:absolute;z-index:2;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;transform:translateZ(25px)}
 .kind{font:8px Arial,sans-serif;letter-spacing:.2em;text-transform:uppercase;padding:7px 9px;border-radius:30px;background:#110d2b77;border:1px solid #ffffff30;backdrop-filter:blur(12px)}
@@ -67,7 +67,7 @@ h1{font-size:clamp(48px,13vw,100px);font-weight:400;letter-spacing:.055em;line-h
 .permission.show{display:block}.permission p{color:var(--muted);font-size:13px;line-height:1.7}
 .permission button{border:1px solid #ffffff35;border-radius:30px;padding:11px 17px;background:#d8b8e828;letter-spacing:.12em;font:9px Arial,sans-serif;text-transform:uppercase}
 .footer{padding:65px 0 20px;text-align:center;color:#b8a9ca;font:8px Arial,sans-serif;letter-spacing:.25em}
-.viewer{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;padding:25px 16px calc(25px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 40%,#3a2b58ee,#090718f5 75%);backdrop-filter:blur(24px);perspective:1000px}
+.viewer{position:fixed;inset:0;z-index:15;display:none;align-items:center;justify-content:center;padding:25px 16px calc(25px + env(safe-area-inset-bottom));background:radial-gradient(ellipse at 50% 40%,#3a2b58ee,#090718f5 75%);backdrop-filter:none;perspective:1000px}
 .viewer.open{display:flex;animation:fadeIn .35s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .viewer-inner{width:min(100%,900px);text-align:center;transform:rotateX(4deg) scale(.96);animation:viewerIn .5s cubic-bezier(.2,.8,.2,1) forwards}
@@ -115,28 +115,49 @@ function updateAlbumOptions(){
  albums.forEach(a=>{const o=document.createElement('option');o.value=a.id;o.textContent=a.name+' ('+mediaItems.filter(x=>x.albumId===a.id).length+')';select.appendChild(o)});
  activeAlbum=albums.some(a=>a.id===previous)?previous:'all';select.value=activeAlbum;
 }
+const PAGE_SIZE=48;
+let renderedCount=0;
+function appendMediaCard(item,index){
+ const card=document.createElement('article');card.className='card';card.style.transitionDelay=Math.min(index%8,7)*20+'ms';
+ const media=document.createElement(item.type==='video'?'video':'img');media.className='card-media';media.dataset.src=item.src;media.alt=item.title;
+ if(item.type==='video'){media.muted=true;media.playsInline=true;media.preload='none';media.setAttribute('playsinline','')}
+ else{media.loading='lazy';media.decoding='async';media.fetchPriority='low'}
+ card.appendChild(media);
+ const top=document.createElement('div');top.className='card-top';const kind=document.createElement('span');kind.className='kind';kind.textContent=item.type==='video'?'MOVING MEMORY':'STILL MEMORY';top.appendChild(kind);
+ if(item.type==='video'){const play=document.createElement('span');play.className='play';play.textContent='▶';top.appendChild(play)}
+ card.appendChild(top);
+ const caption=document.createElement('div');caption.className='card-caption';const title=document.createElement('strong');title.textContent=item.title;const date=document.createElement('small');date.textContent=item.tag||'FROM YOUR DEVICE';caption.append(title,date);card.appendChild(caption);
+ card.addEventListener('click',()=>openViewer(item));
+ if(!('ontouchstart' in window)){card.addEventListener('pointermove',e=>tiltCard(card,e));card.addEventListener('pointerleave',()=>resetCard(card))}
+ gallery.appendChild(card);observer.observe(card);
+}
+function appendNextPage(){
+ const end=Math.min(renderedCount+PAGE_SIZE,visibleItems.length);
+ for(let i=renderedCount;i<end;i++)appendMediaCard(visibleItems[i],i);
+ renderedCount=end;
+ let more=document.getElementById('loadMore');
+ if(more)more.remove();
+ if(renderedCount<visibleItems.length){
+  more=document.createElement('button');more.id='loadMore';more.className='rescan';more.style.cssText='display:block;margin:24px auto 0;padding:13px 24px';
+  more.textContent='Xem thêm ('+(visibleItems.length-renderedCount)+')';more.addEventListener('click',appendNextPage);gallery.after(more);
+ }
+}
 function render(){
  if(observer){observer.disconnect();observer=null}
- gallery.innerHTML='';
+ const oldMore=document.getElementById('loadMore');if(oldMore)oldMore.remove();
+ gallery.innerHTML='';renderedCount=0;
  let shown=mediaItems.filter(x=>(activeFilter==='all'||x.type===activeFilter)&&(activeAlbum==='all'||x.albumId===activeAlbum)&&(!searchTerm||x.title.toLocaleLowerCase('vi').includes(searchTerm)));
  shown.sort((a,b)=>sortOrder==='oldest'?(a.date-b.date):sortOrder==='name'?a.title.localeCompare(b.title,'vi'):(b.date-a.date));visibleItems=shown;
- document.getElementById('count').textContent=shown.length+' / '+mediaItems.length+' MEMORIES';
+ document.getElementById('count').textContent=shown.length+' MEMORIES';
  if(!shown.length){renderEmpty('A quiet little universe','Không tìm thấy nội dung phù hợp. Thử đổi bộ lọc hoặc quét lại thiết bị.');return}
- shown.forEach((item,index)=>{
-  const card=document.createElement('article');card.className='card';card.style.transitionDelay=Math.min(index%8,7)*45+'ms';
-  const media=document.createElement(item.type==='video'?'video':'img');media.className='card-media';media.src=item.src;media.alt=item.title;
-  if(item.type==='video'){media.muted=true;media.playsInline=true;media.preload='metadata'}
-  card.appendChild(media);
-  const top=document.createElement('div');top.className='card-top';const kind=document.createElement('span');kind.className='kind';kind.textContent=item.type==='video'?'MOVING MEMORY':'STILL MEMORY';top.appendChild(kind);
-  if(item.type==='video'){const play=document.createElement('span');play.className='play';play.textContent='▶';top.appendChild(play)}
-  card.appendChild(top);
-  const caption=document.createElement('div');caption.className='card-caption';const title=document.createElement('strong');title.textContent=item.title;const date=document.createElement('small');date.textContent=item.tag||'FROM YOUR DEVICE';caption.append(title,date);card.appendChild(caption);
-  card.addEventListener('click',()=>openViewer(item));
-  card.addEventListener('pointermove',e=>tiltCard(card,e));card.addEventListener('pointerleave',()=>resetCard(card));
-  gallery.appendChild(card);
- });
- observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.08});
- gallery.querySelectorAll('.card').forEach(c=>observer.observe(c));
+ observer=new IntersectionObserver(entries=>entries.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const card=e.target,media=card.querySelector('.card-media');
+  card.classList.add('visible');
+  if(media&&media.dataset.src){media.src=media.dataset.src;media.removeAttribute('data-src')}
+  observer.unobserve(card);
+ }),{threshold:.01,rootMargin:'220px 0px'});
+ appendNextPage();
 }
 function tiltCard(card,e){
  if(e.pointerType==='touch')return;
