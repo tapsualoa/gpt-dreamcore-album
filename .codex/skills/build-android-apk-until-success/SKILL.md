@@ -31,3 +31,5 @@ Deliver a real, installable APK from this repository. Do not stop at uploading s
 - Preserve existing app functionality while fixing build issues.
 - Make changes sequentially; do not update the same file concurrently.
 - Keep the user informed with concise Vietnamese updates, but do not send repetitive progress-only messages.
+## Android SDK setup note
+On GitHub-hosted Ubuntu runners, avoid asking `android-actions/setup-android` to install the obsolete `tools` package. Use the setup action with `packages: ''`, then install only current packages explicitly through `"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"`, for example `platform-tools`, `platforms;android-35`, and `build-tools;35.0.0`. The `sdkmanager` binary may not be on PATH unless the setup action has configured it; use the explicit SDK path.
