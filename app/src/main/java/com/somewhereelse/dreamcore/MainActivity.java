@@ -1,19 +1,26 @@
 package com.somewhereelse.dreamcore;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
+import android.content.ContentUris;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.webkit.ValueCallback;
+import android.provider.MediaStore;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class MainActivity extends Activity {
+    private static final int MEDIA_PERMISSION_REQUEST = 402;
     private WebView webView;
-    private ValueCallback<Uri[]> fileCallback;
-    private static final int FILE_CHOOSER_REQUEST = 401;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -24,41 +31,117 @@ public class MainActivity extends Activity {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
-        settings.setDatabaseEnabled(true);
         settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
         settings.setMediaPlaybackRequiresUserGesture(true);
+        webView.addJavascriptInterface(new AlbumBridge(), "DreamcoreAlbum");
         webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
-                if (fileCallback != null) fileCallback.onReceiveValue(null);
-                fileCallback = callback;
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("*/*");
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                startActivityForResult(Intent.createChooser(intent, "Chọn ảnh hoặc video"), FILE_CHOOSER_REQUEST);
-                return true;
-            }
-        });
+        webView.setWebChromeClient(new WebChromeClient());
         setContentView(webView);
         webView.loadUrl("file:///android_asset/index.html");
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FILE_CHOOSER_REQUEST && fileCallback != null) {
-            Uri[] results = null;
-            if (resultCode == RESULT_OK && data != null) {
-                if (data.getClipData() != null) {
-                    int count = data.getClipData().getItemCount();
-                    results = new Uri[count];
-                    for (int i = 0; i < count; i++) results[i] = data.getClipData().getItemAt(i).getUri();
-                } else if (data.getData() != null) results = new Uri[]{data.getData()};
-            }
-            fileCallback.onReceiveValue(results);
-            fileCallback = null;
+    private boolean hasMediaPermission() {
+        if (Build.VERSION.SDK_INT >= 34) {
+            return checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED) == PackageManager.PERMISSION_GRANTED;
+        } else if (Build.VERSION.SDK_INT >= 33) {
+            return checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED;
+        } else {
+            return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
+    }
+
+    private void requestMediaPermission() {
+        if (Build.VERSION.SDK_INT >= 34) {
+            requestPermissions(new String[]{
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            }, MEDIA_PERMISSION_REQUEST);
+        } else if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(new String[]{
+                Manifest.permission.READ_MEDIA_IMAGES,
+                Manifest.permission.READ_MEDIA_VIDEO
+            }, MEDIA_PERMISSION_REQUEST);
+        } else {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MEDIA_PERMISSION_REQUEST);
+        }
+    }
+
+    private JSONArray queryCollection(Uri collection, String type) {
+        JSONArray result = new JSONArray();
+        String[] projection = {
+            MediaStore.MediaColumns._ID,
+            MediaStore.MediaColumns.DISPLAY_NAME,
+            MediaStore.MediaColumns.DATE_ADDED,
+            MediaStore.MediaColumns.MIME_TYPE
+        };
+        try (Cursor cursor = getContentResolver().query(
+                collection, projection, null, null,
+                MediaStore.MediaColumns.DATE_ADDED + " DESC")) {
+            if (cursor == null) return result;
+            int idCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns._ID);
+            int nameCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
+            int dateCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATE_ADDED);
+            int mimeCol = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE);
+            while (cursor.moveToNext()) {
+                long id = cursor.getLong(idCol);
+                Uri itemUri = ContentUris.withAppendedId(collection, id);
+                JSONObject item = new JSONObject();
+                item.put("uri", itemUri.toString());
+                item.put("title", cursor.getString(nameCol) == null ? "Untitled" : cursor.getString(nameCol));
+                item.put("date", cursor.getLong(dateCol));
+                item.put("mime", cursor.getString(mimeCol) == null ? "" : cursor.getString(mimeCol));
+                item.put("type", type);
+                result.put(item);
+            }
+        } catch (Exception ignored) { }
+        return result;
+    }
+
+    private JSONArray getDeviceMedia() {
+        JSONArray all = new JSONArray();
+        if (!hasMediaPermission()) return all;
+        JSONArray images = queryCollection(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "photo");
+        JSONArray videos = queryCollection(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "video");
+        for (int i = 0; i < images.length(); i++) all.put(images.optJSONObject(i));
+        for (int i = 0; i < videos.length(); i++) all.put(videos.optJSONObject(i));
+        return all;
+    }
+
+    private class AlbumBridge {
+        @JavascriptInterface public void requestMediaAccess() {
+            runOnUiThread(() -> {
+                if (hasMediaPermission()) notifyPage(true);
+                else requestMediaPermission();
+            });
+        }
+        @JavascriptInterface public String getDeviceMediaJson() {
+            return getDeviceMedia().toString();
+        }
+        @JavascriptInterface public boolean hasMediaAccess() {
+            return hasMediaPermission();
+        }
+    }
+
+    private void notifyPage(boolean granted) {
+        if (webView != null) {
+            webView.post(() -> webView.evaluateJavascript(
+                "window.onNativeMediaChanged && window.onNativeMediaChanged(" + (granted ? "true" : "false") + ")", null));
+        }
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MEDIA_PERMISSION_REQUEST) notifyPage(hasMediaPermission());
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (webView != null && hasMediaPermission()) notifyPage(true);
     }
 
     @Override public void onBackPressed() {
@@ -67,8 +150,7 @@ public class MainActivity extends Activity {
     }
 
     @Override protected void onDestroy() {
-        if (fileCallback != null) fileCallback.onReceiveValue(null);
-        if (webView != null) { webView.destroy(); webView = null; }
+        if (webView != null) { webView.removeJavascriptInterface("DreamcoreAlbum"); webView.destroy(); webView = null; }
         super.onDestroy();
     }
 }
