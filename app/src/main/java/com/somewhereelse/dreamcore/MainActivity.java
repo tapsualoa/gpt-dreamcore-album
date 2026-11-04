@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
         protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight(),cx=w/2f,cy=h*.48f;
             p.setShader(new RadialGradient(cx,cy,dp(155),new int[]{0x55E8C7F4,0x1C9CB9E8,0x00000000},null,Shader.TileMode.CLAMP));c.drawCircle(cx,cy,dp(155),p);p.setShader(null);
             p.setStyle(Paint.Style.STROKE);p.setStrokeWidth(dp(1));p.setColor(0x35F5DFFF);c.save();c.rotate(-18,cx,cy);c.drawOval(cx-dp(130),cy-dp(78),cx+dp(130),cy+dp(78),p);c.rotate(39,cx,cy);c.drawOval(cx-dp(145),cy-dp(54),cx+dp(145),cy+dp(54),p);c.restore();p.setStyle(Paint.Style.FILL);
-            p.setTextAlign(Paint.Align.CENTER);p.setColor(0xFFEADAF5);p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL));p.setTextSize(dp(9));p.setLetterSpacingCompat(.24f);c.drawText("✧  GPT DREAMCORE  ✧",cx,dp(24),p);
+            p.setTextAlign(Paint.Align.CENTER);p.setColor(0xFFEADAF5);p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL));p.setTextSize(dp(9));c.drawText("✧  GPT DREAMCORE  ✧",cx,dp(24),p);
             p.setTypeface(serif);p.setColor(0xFFFFF7FF);p.setTextSize(dp(53));p.setShadowLayer(dp(20),0,0,0x99DDB5F2);c.drawText("Somewhere",cx,cy-dp(2),p);p.clearShadowLayer();p.setTextSize(dp(57));c.drawText("Else.",cx,cy+dp(53),p);
             p.setTypeface(italic);p.setColor(0xFFD8C9E7);p.setTextSize(dp(12));c.drawText("A little universe inside your phone",cx,cy+dp(84),p);
             p.setTypeface(Typeface.create("sans-serif",Typeface.NORMAL));p.setTextSize(dp(8));p.setColor(0xFFBDAECD);c.drawText("YOUR PERSONAL MEMORY SPACE",cx,h-dp(18),p);
